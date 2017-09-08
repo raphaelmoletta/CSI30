@@ -7,6 +7,7 @@ package br.edu.utfpr.dainf.csi30.tarefa4.sistema;
 
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.CoordenadasGeo;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Labirinto;
+import br.edu.utfpr.dainf.csi30.tarefa4.comuns.No;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Ponto;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,8 @@ public class Problema implements CoordenadasGeo {
      * Por exemplo, 
      * [-1, -1, -1, 1, 1, -1, -1, -1] indica apenas que S e SO podem ser executadas.
      */
-    protected List<Ponto> calcularAcoesPossiveis() {
-        List<Ponto> acoes = new ArrayList<>();
+    protected List<No> calcularAcoesPossiveis() {
+        List<No> acoes = new ArrayList<>();
         
         for(int i = 0 ; i < 7; i++){
             
@@ -73,7 +74,8 @@ public class Problema implements CoordenadasGeo {
               ponto.getColuna() >= 0 && ponto.getColuna() < creLab.getColunas() &&
                 ponto.getLinha() >= 0 && ponto.getLinha() < creLab.getLinhas() &&
                 creLab.parede[ponto.getLinha()][ponto.getColuna()] == 0) {
-                acoes.add(ponto);
+                double custo = (i % 2 == 0) ? 1 : 1.5;
+                acoes.add(new No(ponto, custo));
             }
         }
    

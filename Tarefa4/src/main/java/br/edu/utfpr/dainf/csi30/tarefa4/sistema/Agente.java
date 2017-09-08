@@ -3,7 +3,10 @@ package br.edu.utfpr.dainf.csi30.tarefa4.sistema;
 
 import br.edu.utfpr.dainf.csi30.tarefa4.ambiente.Ambiente;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.CoordenadasGeo;
+import br.edu.utfpr.dainf.csi30.tarefa4.comuns.No;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Ponto;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -26,7 +29,18 @@ public class Agente implements CoordenadasGeo {
     }
     
     public boolean solucionarCustoUniforme() {
-        List<Ponto> acoes = problema.calcularAcoesPossiveis();
+        List<No> acoes = problema.calcularAcoesPossiveis();
+        Collections.sort(acoes, (No t, No t1) -> {
+            if(t.getCusto() > t1.getCusto())
+                return 1;
+            else if (t.getCusto() < t1.getCusto())
+                return -1;
+            return 0;
+        });
+        for(No n : acoes) {
+            System.out.println(n.getCusto() + " ");
+        }
+        
         
         return false;
     }
@@ -39,7 +53,7 @@ public class Agente implements CoordenadasGeo {
      * Escolhe qual ação será executada em um ciclo de raciocínio
      */
     public int deliberar() {
-        List<Ponto> ap = problema.calcularAcoesPossiveis();
+        List<No> ap = problema.calcularAcoesPossiveis();
         
         // nao atingiu objetivo e ha acoesPossiveis a serem executadas no plano
         if (!problema.testarObjetivo()) {
