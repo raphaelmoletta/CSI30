@@ -2,9 +2,9 @@ package br.edu.utfpr.dainf.csi30.tarefa4.comuns;
 
 public class Labirinto {
     public int parede[][]; // armazena posicao das paredes marcando-as com 1
-    private final Ponto maximos;     // maximo de colunas
+    private final No maximos;     // maximo de colunas
     
-    public Labirinto(Ponto maximos) {
+    public Labirinto(No maximos) {
         if(maximos.getLinha() < 5) {
             maximos.setLinha(5);
         }
@@ -16,7 +16,7 @@ public class Labirinto {
     }
     
     public Labirinto (Labirinto labirinto) {
-        this.maximos = new Ponto(labirinto.getLinhas(), labirinto.getColunas());
+        this.maximos = new No(labirinto.getLinhas(), labirinto.getColunas());
         parede = new int[maximos.getLinha()][maximos.getColuna()];
         for(int l = 0; l < maximos.getLinha(); l++) {
             System.arraycopy(labirinto.parede[l], 0, parede[l], 0, maximos.getColuna());
@@ -31,7 +31,7 @@ public class Labirinto {
         return maximos.getColuna();
     }
     
-    public Ponto getMaximos() {
+    public No getMaximos() {
         return maximos;
     }
     

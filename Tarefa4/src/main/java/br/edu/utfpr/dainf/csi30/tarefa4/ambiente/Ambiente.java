@@ -9,16 +9,17 @@ package br.edu.utfpr.dainf.csi30.tarefa4.ambiente;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.CoordenadasGeo;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.InterfaceExibicao;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Labirinto;
-import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Ponto;
+import br.edu.utfpr.dainf.csi30.tarefa4.comuns.No;
 
 public class Ambiente implements CoordenadasGeo {
-    protected Ponto posicaoAgente;   // pos do agente {linha, coluna)
+    protected No posicaoAgente;   // pos do agente {linha, coluna)
     protected Labirinto labirinto;   // representacao do labirinto
     protected InterfaceExibicao exibicao;     
 
-    public Ambiente(Labirinto labirinto, InterfaceExibicao exibicao) {
+    public Ambiente(Labirinto labirinto, InterfaceExibicao exibicao, No posicaoAgente) {
         this.labirinto = labirinto;
         this.exibicao = exibicao;
+        this.posicaoAgente = posicaoAgente;
         // instancia a visualizacao do ambiente associando-a ao model
     }
     
@@ -26,11 +27,11 @@ public class Ambiente implements CoordenadasGeo {
         exibicao.desenhar(this);
     }
     
-    public Ponto lerPosicaoAgente() {
+    public No lerPosicaoAgente() {
         return posicaoAgente;
     }
     
-    public Ponto lerMaximos() {
+    public No lerMaximos() {
         return this.labirinto.getMaximos();
     }
 

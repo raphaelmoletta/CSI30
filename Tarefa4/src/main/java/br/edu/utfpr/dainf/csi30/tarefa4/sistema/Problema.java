@@ -8,16 +8,15 @@ package br.edu.utfpr.dainf.csi30.tarefa4.sistema;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.CoordenadasGeo;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Labirinto;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.No;
-import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Ponto;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Problema implements CoordenadasGeo {
 
-    protected Ponto estadoInicial = new Ponto();  // estado inicial [linha, coluna] = pos do agente
-    protected Ponto estadoObjetivo = new Ponto();  // estado objetivo [linha, coluna]
-    protected Ponto estadoAtual = new Ponto();  // estado atual [linha, coluna]
+    protected No estadoInicial = new No();  // estado inicial [linha, coluna] = pos do agente
+    protected No estadoObjetivo = new No();  // estado objetivo [linha, coluna]
+    protected No estadoAtual = new No();  // estado atual [linha, coluna]
     protected Labirinto creLab;           // crença do agente sobre como eh o labirinto
 
     public Problema(Labirinto labrinto) {
@@ -27,21 +26,21 @@ public class Problema implements CoordenadasGeo {
     /*
      * Define estado inicial
      */
-    protected void setEstadoInicial(Ponto ponto) {
+    protected void setEstadoInicial(No ponto) {
         estadoInicial = ponto;
     }
 
     /*
      * Define estado objetivo
      */
-    protected void setEstadoObjetivo(Ponto ponto) {
+    protected void setEstadoObjetivo(No ponto) {
         estadoObjetivo = ponto;
     }
     /*
      * Define estado atual
      */
 
-    protected void setEstadoAtual(Ponto ponto) {
+    protected void setEstadoAtual(No ponto) {
         estadoAtual = ponto;
     }
     /*
@@ -49,8 +48,8 @@ public class Problema implements CoordenadasGeo {
      * que resulta da execucao da acao = {N, NE, L, SE, S, SO, O, NO}
      */
 
-    protected Ponto calcularSucessores(Direcao acao) {
-        estadoAtual = calcularAcaoPossivel(acao);
+    protected No calcularSucessores(No no, Direcao acao) {
+        estadoAtual = calcularAcaoPossivel(no, acao);
         // atribui nova posicao ao estado atual
         // defEstAtu(lin, col);
         return estadoAtual;
@@ -63,27 +62,29 @@ public class Problema implements CoordenadasGeo {
      * Por exemplo, 
      * [-1, -1, -1, 1, 1, -1, -1, -1] indica apenas que S e SO podem ser executadas.
      */
-    protected List<No> calcularAcoesPossiveis() {
+    protected List<No> calcularAcoesPossiveis(No no) {
+        
         List<No> acoes = new ArrayList<>();
         
         for(int i = 0 ; i < 7; i++){
             
-            Ponto ponto = calcularAcaoPossivel(Direcao.values()[i]);
-            if(!(ponto.getColuna() == estadoAtual.getColuna() &&
-                    ponto.getLinha() == estadoAtual.getLinha()) && 
+            No ponto = calcularAcaoPossivel(no, Direcao.values()[i]);
+            if(!(ponto.getColuna() == no.getColuna() &&
+                    ponto.getLinha() == no.getLinha()) && 
               ponto.getColuna() >= 0 && ponto.getColuna() < creLab.getColunas() &&
                 ponto.getLinha() >= 0 && ponto.getLinha() < creLab.getLinhas() &&
                 creLab.parede[ponto.getLinha()][ponto.getColuna()] == 0) {
                 double custo = (i % 2 == 0) ? 1 : 1.5;
-                acoes.add(new No(ponto, custo));
+                ponto.setCusto(custo + no.getCusto());
+                acoes.add(ponto);
             }
         }
    
         return acoes;
     }
 
-    protected Ponto calcularAcaoPossivel(Direcao direcao) {
-        int l = estadoAtual.getLinha(), c = estadoAtual.getColuna();
+    protected No calcularAcaoPossivel(No no, Direcao direcao) {
+        int l = no.getLinha(), c = no.getColuna();
         switch(direcao.ordinal()) {
             case 0 :
                 l--;
@@ -115,14 +116,14 @@ public class Problema implements CoordenadasGeo {
                 break;
         }
         
-        return new Ponto(l,c);
+        return new No(l,c);
         
     }
     /*
      * Retorna true quando estado atual = estado objetivo, caso contrario retorna falso
      */
-    protected boolean testarObjetivo() {
-        return estadoAtual.getColuna() == estadoObjetivo.getColuna() &&
-                estadoAtual.getLinha() == estadoObjetivo.getLinha();
+    protected boolean testarObjetivo(No no) {
+        return (no.getColuna() == estadoObjetivo.getColuna() &&
+                no.getLinha() == estadoObjetivo.getLinha());
     }
 }

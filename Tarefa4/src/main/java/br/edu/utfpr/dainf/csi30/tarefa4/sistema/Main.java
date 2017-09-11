@@ -3,7 +3,7 @@ package br.edu.utfpr.dainf.csi30.tarefa4.sistema;
 import br.edu.utfpr.dainf.csi30.tarefa4.ambiente.Ambiente;
 import br.edu.utfpr.dainf.csi30.tarefa4.ambiente.Exibicao;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Labirinto;
-import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Ponto;
+import br.edu.utfpr.dainf.csi30.tarefa4.comuns.No;
 
 /**
  *
@@ -13,7 +13,7 @@ public class Main {
     public static void main(String args[]) {
         // Cria o labirinto
         System.out.println("Criando Labirinto...");
-        Labirinto labirinto = new Labirinto(new Ponto(9,9));
+        Labirinto labirinto = new Labirinto(new No(9,9));
         labirinto.porParedeVertical(0, 1, 0);
         labirinto.porParedeHorizontal(0, 1, 0);
         labirinto.porParedeHorizontal(4, 7, 0);
@@ -31,24 +31,25 @@ public class Main {
         
         //cria o ambiente e passa o labirinto real
         System.out.println("Criando Ambiente...");
-        Ambiente ambiente = new Ambiente(labirinto, new Exibicao());
+        Ambiente ambiente = new Ambiente(labirinto, new Exibicao(), new No(8,0));
+        ambiente.desenhar();
 
         //cria o problema e passa o labirinto que é a crença do agente
         System.out.println("Criando Problema...");
         Problema problema = new Problema(new Labirinto(labirinto));
         
         //Define ponto inicial
-        Ponto estadoInicial = new Ponto(8, 0);
+        No estadoInicial = new No(8, 0);
         System.out.println("Estado inicial: " + estadoInicial.toString());
         problema.setEstadoInicial(estadoInicial);
         
         //Define ponto objetivo
-        Ponto estadoObjetivo = new Ponto(2, 8);
+        No estadoObjetivo = new No(2, 8);
         System.out.println("Estado Objetivo: " + estadoObjetivo.toString());
         problema.setEstadoObjetivo(estadoObjetivo);
         
         //Define ponto atual
-        Ponto estadoAtual = new Ponto(8,0);
+        No estadoAtual = new No(8,0);
         System.out.println("Estado Atual: " + estadoAtual.toString());
         problema.setEstadoAtual(estadoAtual);
         
@@ -88,6 +89,5 @@ public class Main {
         } else {
             System.out.println(" # Falha na solução.");
         }
-        
     }
 }
