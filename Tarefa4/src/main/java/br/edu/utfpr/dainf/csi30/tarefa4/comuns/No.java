@@ -9,6 +9,7 @@ public final class No implements Comparable<No> {
     protected int linha;
     protected int coluna;
     protected double custo;
+    protected No de;
 
     public No(int linha, int coluna, double custo) {
         setLinha(linha);
@@ -52,6 +53,19 @@ public final class No implements Comparable<No> {
         this.custo = custo;
     }
 
+    public No getDe() {
+        return de;
+    }
+
+    public void setDe(No de) {
+        this.de = de;
+    }
+    
+    public boolean igual (No no) {
+        return no.getColuna() == this.getColuna() &&
+                no.getLinha() == this.getLinha();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
@@ -60,7 +74,8 @@ public final class No implements Comparable<No> {
         sb.append(coluna);
         sb.append("] (");
         sb.append(custo);
-        sb.append(")");
+        sb.append(") ");
+        sb.append(de);
 
         return sb.toString();
     }

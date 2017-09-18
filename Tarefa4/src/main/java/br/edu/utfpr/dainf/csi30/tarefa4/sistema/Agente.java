@@ -19,56 +19,98 @@ public class Agente implements CoordenadasGeo {
     }
     protected Ambiente ambiente;
     protected Problema problema;   // Problema estah na 'mente' do agente
-    private int passo = 0;
 
     //colocar aqui plano armazenado de acoes que será executado 
     // passo a passo em deliberar
     protected int[] plano;
+    protected int passo = 0;
 
     public Agente(Ambiente ambiente, Problema problema) {
         this.ambiente = ambiente;
         this.problema = problema;
     }
-    
+
     private boolean contem(Collection<No> colecao, No no) {
         return colecao.stream().anyMatch((n) -> (no.getColuna() == n.getColuna() && no.getLinha() == n.getLinha()));
     }
 
     public boolean solucionarCustoUniforme() {
         No no = problema.estadoInicial;
-        System.out.println("No inicial: " + no.toString());
         Queue<No> fronteira = new PriorityQueue<>();
         fronteira.add(no);
         Queue<No> explorado = new PriorityQueue<>();
-
         while (!fronteira.isEmpty()) {
             no = fronteira.poll();
             if (problema.testarObjetivo(no)) {
-                System.out.println("Custo total: " + no.getCusto());
-                
+                System.out.println("## " + no.toString());
+                gerarResultadoCustoUniforme(no);
                 return true;
             }
-            System.out.println("add Explorado nó: " + no.toString());
+
             explorado.add(no);
             List<No> acao = problema.calcularAcoesPossiveis(no);
-            acao.forEach((n) -> {
-                System.out.println("Cada nó: " + n.toString());
+            for (No n : acao) {
                 if (!(contem(explorado, n) || contem(fronteira, n))) {
-                    System.out.println("add Fronteira nó: " + n.toString());
+                    n.setDe(no);
                     fronteira.add(n);
                 } else if (fronteira.contains(n)) {
                     fronteira.forEach((No e) -> {
-                        if (e.getColuna() == n.getColuna()
-                                && e.getLinha() == n.getLinha()
-                                && e.getCusto() < n.getCusto()) {
-                            e.setCusto(n.getCusto());
+                        if (e.igual(n)) {
+                            fronteira.remove(e);
+                            fronteira.add(n);
                         }
                     });
                 }
-            });
+            }
         }
 
         return false;
+    }
+
+    public void gerarResultadoCustoUniforme(No no) {
+        Queue<No> resultado = new PriorityQueue<>();
+        while (no.getDe() != null) {
+            resultado.add(no);
+            no = no.getDe();
+        }
+        resultado.add(no);
+        plano = new int[resultado.size()];
+        no = resultado.poll();
+        System.out.println(resultado.size());
+        No next;
+        int l, c, size = resultado.size();
+        for (int i = 0; i < size; i++) {
+            next = resultado.poll();
+            System.out.println("[" + next.getLinha() + ", " + next.getColuna() + "]");
+            l = next.getLinha() - no.getLinha();
+            c = next.getColuna() - no.getColuna();
+
+            if (c > 0) {
+                if (l > 0) {
+                    plano[i] = 3;
+                } else if (l < 0) {
+                    plano[i] = 1;
+                } else {
+                    plano[i] = 2;
+                }
+            } else if (c < 0) {
+                if (l > 0) {
+                    plano[i] = 7;
+                } else if (l < 0) {
+                    plano[i] = 5;
+                } else {
+                    plano[i] = 2;
+                }
+            } else {
+                if (l < 0) {
+                    plano[i] = 0;
+                } else if (l > 0) {
+                    plano[i] = 4;
+                }
+            }
+            System.out.println(plano[i]);
+            no = next;
+        }
     }
 
     public boolean solucionarAEstrela(Heuristica heuristica) {
@@ -83,13 +125,10 @@ public class Agente implements CoordenadasGeo {
         if (!problema.testarObjetivo(problema.estadoAtual)) {
             System.out.println("estado atual: " + problema.estadoAtual.toString());
             System.out.print("açoes possiveis: ");
-            for (int i = 0; i < plano.length; i++) {
-                //todo if (ap.get(i)!=-1)
-                //todo System.out.print(acao[i]+" ");
-            }
-            //todo System.out.println("\nct = "+ custo + " de " + (plano.length-1) + " ação=" + acao[plano[custo]] + "\n");
+            problema.calcularAcoesPossiveis(problema.estadoAtual);
+            
+            System.out.println("Ação=" + Direcao.values()[plano[passo]] + "\n");
             ir(Direcao.values()[plano[passo]]);
-
             passo++;
         } else {
             return (-1);

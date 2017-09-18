@@ -123,7 +123,6 @@ public class Problema implements CoordenadasGeo {
      * Retorna true quando estado atual = estado objetivo, caso contrario retorna falso
      */
     protected boolean testarObjetivo(No no) {
-        return (no.getColuna() == estadoObjetivo.getColuna() &&
-                no.getLinha() == estadoObjetivo.getLinha());
+        return estadoObjetivo.igual(no);
     }
 }
