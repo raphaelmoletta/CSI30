@@ -8,6 +8,7 @@ package br.edu.utfpr.dainf.csi30.tarefa4.sistema;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.CoordenadasGeo;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Labirinto;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.No;
+import br.edu.utfpr.dainf.csi30.tarefa4.sistema.Agente.Metodo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,10 +63,10 @@ public class Problema implements CoordenadasGeo {
      * Por exemplo, 
      * [-1, -1, -1, 1, 1, -1, -1, -1] indica apenas que S e SO podem ser executadas.
      */
-    protected List<No> calcularAcoesPossiveis(No no) {
+    protected List<No> calcularAcoesPossiveis(No no, Metodo metodo) {
         
         List<No> acoes = new ArrayList<>();
-        
+        double heuristica = 0;
         for(int i = 0 ; i < 7; i++){
             
             No ponto = calcularAcaoPossivel(no, Direcao.values()[i]);
@@ -75,7 +76,16 @@ public class Problema implements CoordenadasGeo {
                 ponto.getLinha() >= 0 && ponto.getLinha() < creLab.getLinhas() &&
                 creLab.parede[ponto.getLinha()][ponto.getColuna()] == 0) {
                 double custo = (i % 2 == 0) ? 1 : 1.5;
-                ponto.setCusto(custo + no.getCusto());
+                switch (metodo) {
+                    case AEstrelaColuna :
+                        heuristica = Math.abs(estadoObjetivo.getColuna() - ponto.getColuna());
+                        break;
+                    case AEstrelaEuclidiana :
+                        heuristica = Math.sqrt(Math.pow(estadoObjetivo.getColuna() - ponto.getColuna(),2) + 
+                                Math.pow(estadoObjetivo.getLinha() - ponto.getLinha(), 2));
+                        break;
+                }
+                ponto.setCusto(custo + no.getCusto() + heuristica);
                 acoes.add(ponto);
             }
         }

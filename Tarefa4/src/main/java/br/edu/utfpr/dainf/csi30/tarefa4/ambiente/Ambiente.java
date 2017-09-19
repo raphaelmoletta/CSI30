@@ -31,6 +31,10 @@ public class Ambiente implements CoordenadasGeo {
         return posicaoAgente;
     }
     
+    public void definirPosicaoAgente(No novaPosicaoAgente) {
+        posicaoAgente = novaPosicaoAgente;
+    }
+    
     public No lerMaximos() {
         return this.labirinto.getMaximos();
     }

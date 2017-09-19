@@ -14,8 +14,8 @@ import java.util.Queue;
  */
 public class Agente implements CoordenadasGeo {
 
-    public enum Heuristica {
-        euclidiana, coluna
+    public enum Metodo {
+        CustoUniforme, AEstrelaEuclidiana, AEstrelaColuna
     }
     protected Ambiente ambiente;
     protected Problema problema;   // Problema estah na 'mente' do agente
@@ -33,8 +33,8 @@ public class Agente implements CoordenadasGeo {
     private boolean contem(Collection<No> colecao, No no) {
         return colecao.stream().anyMatch((n) -> (no.getColuna() == n.getColuna() && no.getLinha() == n.getLinha()));
     }
-
-    public boolean solucionarCustoUniforme() {
+        
+    public boolean solucionar(Metodo metodo) {
         No no = problema.estadoInicial;
         Queue<No> fronteira = new PriorityQueue<>();
         fronteira.add(no);
@@ -42,13 +42,12 @@ public class Agente implements CoordenadasGeo {
         while (!fronteira.isEmpty()) {
             no = fronteira.poll();
             if (problema.testarObjetivo(no)) {
-                System.out.println("## " + no.toString());
-                gerarResultadoCustoUniforme(no);
+                gerarResultado(no);
                 return true;
             }
 
             explorado.add(no);
-            List<No> acao = problema.calcularAcoesPossiveis(no);
+            List<No> acao = problema.calcularAcoesPossiveis(no, metodo);
             for (No n : acao) {
                 if (!(contem(explorado, n) || contem(fronteira, n))) {
                     n.setDe(no);
@@ -67,7 +66,7 @@ public class Agente implements CoordenadasGeo {
         return false;
     }
 
-    public void gerarResultadoCustoUniforme(No no) {
+    public void gerarResultado(No no) {
         Queue<No> resultado = new PriorityQueue<>();
         while (no.getDe() != null) {
             resultado.add(no);
@@ -76,12 +75,10 @@ public class Agente implements CoordenadasGeo {
         resultado.add(no);
         plano = new int[resultado.size()];
         no = resultado.poll();
-        System.out.println(resultado.size());
         No next;
         int l, c, size = resultado.size();
         for (int i = 0; i < size; i++) {
             next = resultado.poll();
-            System.out.println("[" + next.getLinha() + ", " + next.getColuna() + "]");
             l = next.getLinha() - no.getLinha();
             c = next.getColuna() - no.getColuna();
 
@@ -108,15 +105,9 @@ public class Agente implements CoordenadasGeo {
                     plano[i] = 4;
                 }
             }
-            System.out.println(plano[i]);
             no = next;
         }
     }
-
-    public boolean solucionarAEstrela(Heuristica heuristica) {
-        return false;
-    }
-
     /* 
      * Escolhe qual ação será executada em um ciclo de raciocínio
      */
@@ -125,7 +116,9 @@ public class Agente implements CoordenadasGeo {
         if (!problema.testarObjetivo(problema.estadoAtual)) {
             System.out.println("estado atual: " + problema.estadoAtual.toString());
             System.out.print("açoes possiveis: ");
-            problema.calcularAcoesPossiveis(problema.estadoAtual);
+            problema.calcularAcoesPossiveis(problema.estadoAtual, Metodo.CustoUniforme).forEach((a) -> {
+                System.out.println(a.toString());
+            });
             
             System.out.println("Ação=" + Direcao.values()[plano[passo]] + "\n");
             ir(Direcao.values()[plano[passo]]);

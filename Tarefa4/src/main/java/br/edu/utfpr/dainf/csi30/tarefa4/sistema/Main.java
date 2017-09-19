@@ -4,6 +4,7 @@ import br.edu.utfpr.dainf.csi30.tarefa4.ambiente.Ambiente;
 import br.edu.utfpr.dainf.csi30.tarefa4.ambiente.Exibicao;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.Labirinto;
 import br.edu.utfpr.dainf.csi30.tarefa4.comuns.No;
+import br.edu.utfpr.dainf.csi30.tarefa4.sistema.Agente.Metodo;
 
 /**
  *
@@ -31,11 +32,54 @@ public class Main {
         
         //cria o ambiente e passa o labirinto real
         System.out.println("Criando Ambiente...");
-        Ambiente ambiente = new Ambiente(labirinto, new Exibicao(), new No(8,0));
+        Exibicao exibicao = new Exibicao();
+        Ambiente ambiente = new Ambiente(new Labirinto(labirinto), exibicao, new No(8,0));
         ambiente.desenhar();
 
         //cria o problema e passa o labirinto que é a crença do agente
         System.out.println("Criando Problema...");
+        Problema problema = gerarProblema(labirinto);
+        
+        // Cria um agente passando o ambiente e o problema
+        System.out.println("Criando Agente...");
+        Agente agente = new Agente(ambiente, problema);
+        
+        System.out.println("Solucionando por Busca de Custo Uniforme");
+        if (agente.solucionar(Metodo.CustoUniforme)) {
+            agente.executar();
+        } else {
+            System.out.println(" # Falha na solução.");
+        }
+        
+        //Reiniciando parametros
+        System.out.println("Reiniciando parametros...");
+        ambiente = new Ambiente(new Labirinto(labirinto), exibicao, new No(8,0));
+        problema = gerarProblema(labirinto);
+        agente = new Agente(ambiente, problema);
+        //Solucionando com A* heuristica trigonométrica
+        System.out.println("Solucionando por A* com Heuristica Euclidiana");
+        if (agente.solucionar(Metodo.AEstrelaEuclidiana)) {
+            agente.executar();
+        } else {
+            System.out.println(" # Falha na solução.");
+        }
+        
+        //Reiniciando parametros
+        System.out.println("Reiniciando parametros...");
+        ambiente = new Ambiente(new Labirinto(labirinto), exibicao, new No(8,0));
+        problema = gerarProblema(labirinto);
+        agente = new Agente(ambiente, problema);
+        
+        //Solucionando com A* heuristica linear...
+        System.out.println("Solucionando por A* com Heuristica Coluna");
+        if(agente.solucionar(Metodo.AEstrelaColuna)) {
+            agente.executar();
+        } else {
+            System.out.println(" # Falha na solução.");
+        }
+    }
+    
+    private static Problema gerarProblema(Labirinto labirinto) {
         Problema problema = new Problema(new Labirinto(labirinto));
         
         //Define ponto inicial
@@ -53,41 +97,6 @@ public class Main {
         System.out.println("Estado Atual: " + estadoAtual.toString());
         problema.setEstadoAtual(estadoAtual);
         
-        // Cria um agente passando o ambiente e o problema
-        System.out.println("Criando Agente...");
-        Agente agente = new Agente(ambiente, problema);
-        
-        System.out.println("Solucionando por Busca de Custo Uniforme");
-        if (agente.solucionarCustoUniforme()) {
-            agente.executar();
-        } else {
-            System.out.println(" # Falha na solução.");
-        }
-        
-        //Reiniciando parametros
-        System.out.println("Reiniciando parametros...");
-        estadoAtual.setLinha(estadoInicial.getLinha());
-        estadoAtual.setColuna(estadoInicial.getColuna());
-        problema.setEstadoAtual(estadoAtual);
-        //Solucionando com A* heuristica trigonométrica
-        System.out.println("Solucionando por A* com Heuristica Euclidiana");
-        if (agente.solucionarAEstrela(Agente.Heuristica.euclidiana)) {
-            agente.executar();
-        } else {
-            System.out.println(" # Falha na solução.");
-        }
-        
-        //Reiniciando parametros
-        System.out.println("Reiniciando parametros...");
-        estadoAtual.setLinha(estadoInicial.getLinha());
-        estadoAtual.setColuna(estadoInicial.getColuna());
-        problema.setEstadoAtual(estadoAtual);
-        //Solucionando com A* heuristica linear...
-        System.out.println("Solucionando por A* com Heuristica Coluna");
-        if(agente.solucionarAEstrela(Agente.Heuristica.coluna)) {
-            agente.executar();
-        } else {
-            System.out.println(" # Falha na solução.");
-        }
+        return problema;
     }
 }
