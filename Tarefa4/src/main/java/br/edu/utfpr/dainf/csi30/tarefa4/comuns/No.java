@@ -75,7 +75,9 @@ public final class No implements Comparable<No> {
         sb.append("] (");
         sb.append(custo);
         sb.append(") ");
-        sb.append(de);
+        if(de != null) {
+            sb.append(de);
+        }
 
         return sb.toString();
     }
