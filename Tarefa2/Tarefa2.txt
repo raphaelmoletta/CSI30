@@ -1,18 +1,2 @@
-
-- Quais são os conhecimentos/crenças que o agente deve ter acerca do ambiente para que possa executar o plano?
-# O agente deve conhecer as paredes e os limites do ambiente para executar o plano.
-
-- Quais atributos de quais classes representam este conhecimento?
-# Problema prob, Labirinto creLab e CoordenadasGeo.
-
-- As crenças do agente sempre correspondem ao estado do mundo?
-# Não
-
-- O que ocorre no caso de divergências entre as representações?
-# O agente pode falhar em atingir o objetivo.
-
-- Quantos planos de ação são possíveis para sair de So e alcançar Sg?
-# Infinitos
-
-- Qual o tamanho do espaço de estados e como pode ser calculado?
-# O espaco de estados é a multiplicação entre o número de linhas e o número de colunas menos os espaços ocupados por paredes.
+﻿3.1 Infinitos
+3.2 
