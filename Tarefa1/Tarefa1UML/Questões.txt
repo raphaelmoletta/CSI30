@@ -1,5 +1,0 @@
-Qual a natureza do ambiente labirinto?
-Completamente observável, um só agente, Deterministico, Sequencial, Estático e Discreto
-
-Quantos estados são possíveis?
-Número de Células menos o Número de Barreiras.
